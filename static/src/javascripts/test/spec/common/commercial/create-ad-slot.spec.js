@@ -25,15 +25,17 @@ define([
     rightSmallHtml,
     spbadgeHtml
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store(['common/utils/config'])
-        .require(['common/modules/commercial/create-ad-slot', 'mocks'], function (createAdSlot, mocks) {
+        .require(['common/modules/commercial/create-ad-slot',
+                  'common/utils/config'], function (createAdSlot, config) {
 
             describe('Create Ad Slot', function () {
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         edition: 'UK'
                     };
                 });

@@ -3,15 +3,17 @@ define([
 ], function (
     Injector
 ) {
+    Injector = Injector.default;
 
    return  new Injector()
         .store('common/utils/config')
-        .require(['common/utils/page', 'mocks'], function (page, mocks) {
+        .require(['common/utils/page',
+                  'common/utils/config'], function (page, config) {
 
             describe('Page', function () {
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         tones: '',
                         series: '',
                         isLive: false,
@@ -23,8 +25,8 @@ define([
                 describe ('isMatch', function() {
 
                     it('should callback on match reports', function () {
-                        mocks.store['common/utils/config'].referencesOfType = function() { return [34, 3] };
-                        mocks.store['common/utils/config'].page.tones = 'Match reports';
+                        config.referencesOfType = function() { return [34, 3] };
+                        config.page.tones = 'Match reports';
 
                         var cb = sinon.spy();
                         // Report
@@ -39,8 +41,8 @@ define([
                     });
 
                     it('should callback on minute by minute live blogs', function () {
-                        mocks.store['common/utils/config'].referencesOfType = function() { return [33, 1] };
-                        mocks.store['common/utils/config'].page.isLiveBlog = true;
+                        config.referencesOfType = function() { return [33, 1] };
+                        config.page.isLiveBlog = true;
 
                         var cb = sinon.spy();
 
@@ -56,8 +58,8 @@ define([
                     });
 
                     it('should callback on match previews', function () {
-                        mocks.store['common/utils/config'].referencesOfType = function() { return [1, 2] };
-                        mocks.store['common/utils/config'].page.series = 'Match previews';
+                        config.referencesOfType = function() { return [1, 2] };
+                        config.page.series = 'Match previews';
 
                         var cb = sinon.spy();
 
@@ -73,8 +75,8 @@ define([
                     });
 
                     it('should not callback without two teams', function () {
-                        mocks.store['common/utils/config'].referencesOfType = function() { return [1] };
-                        mocks.store['common/utils/config'].page.isLiveBlog = true;
+                        config.referencesOfType = function() { return [1] };
+                        config.page.isLiveBlog = true;
 
                         var cb = sinon.spy();
 
@@ -88,7 +90,7 @@ define([
 
                 describe('isClockwatch', function() {
                     it ('should not callback on non-clockwatch series', function () {
-                        mocks.store['common/utils/config'].page.series = 'Blogger of the week (Cities)';
+                        config.page.series = 'Blogger of the week (Cities)';
 
                         var cb = sinon.spy();
 
@@ -98,7 +100,7 @@ define([
                     });
 
                     it ('should callback on clockwacth pages', function () {
-                        mocks.store['common/utils/config'].page.series = 'Clockwatch';
+                        config.page.series = 'Clockwatch';
 
                         var cb = sinon.spy();
 
@@ -110,8 +112,8 @@ define([
 
                 describe('isLiveClockwatch', function() {
                     it ('should not callback on non-live clockwatches', function () {
-                        mocks.store['common/utils/config'].page.series = 'Clockwatch';
-                        mocks.store['common/utils/config'].page.isLive = false;
+                        config.page.series = 'Clockwatch';
+                        config.page.isLive = false;
 
                         var cb = sinon.spy();
 
@@ -121,8 +123,8 @@ define([
                     });
 
                     it ('should callback on live clockwatches', function () {
-                        mocks.store['common/utils/config'].page.series = 'Clockwatch';
-                        mocks.store['common/utils/config'].page.isLive = true;
+                        config.page.series = 'Clockwatch';
+                        config.page.isLive = true;
 
                         var cb = sinon.spy();
 

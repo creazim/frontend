@@ -11,11 +11,13 @@ define([
     ajax,
     Injector
     ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store('common/utils/config')
         .store('common/utils/mediator')
-        .require(['facia/modules/onwards/weather', 'mocks'], function (sut, mocks) {
+        .require(['facia/modules/onwards/weather',
+                  'common/utils/config'], function (sut, config) {
             describe('Weather component', function () {
                 var container,
                     $weather;
@@ -27,9 +29,9 @@ define([
 
                     $('body').append(container);
                     localStorage.clear();
-                    mocks.store['common/utils/config'].switches = {};
-                    mocks.store['common/utils/config'].switches.weather = true;
-                    mocks.store['common/utils/config'].page.edition = 'uk';
+                    config.switches = {};
+                    config.switches.weather = true;
+                    config.page.edition = 'uk';
                 });
 
                 afterEach(function () {
@@ -38,19 +40,19 @@ define([
                 });
 
                 it("should be behind switches", function() {
-                    mocks.store['common/utils/config'].page.pageId = 'uk';
-                    mocks.store['common/utils/config'].switches.weather = false;
+                    config.page.pageId = 'uk';
+                    config.switches.weather = false;
 
                     spyOn(sut, "getDefaultLocation");
 
                     expect(sut.init()).toEqual(false);
                     expect(sut.getDefaultLocation).not.toHaveBeenCalled();
 
-                    mocks.store['common/utils/config'].switches = null;
+                    config.switches = null;
                     expect(sut.init()).toEqual(false);
                     expect(sut.getDefaultLocation).not.toHaveBeenCalled();
 
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         weather: true
                     };
                     sut.init();
@@ -60,30 +62,30 @@ define([
                 it("should initialize only if on front page", function() {
                     spyOn(sut, "getDefaultLocation");
 
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         weather: true
                     };
 
-                    mocks.store['common/utils/config'].page.pageId = '/social';
+                    config.page.pageId = '/social';
                     sut.init();
                     expect(sut.getDefaultLocation).not.toHaveBeenCalled();
 
-                    mocks.store['common/utils/config'].page.pageId = 'uk';
+                    config.page.pageId = 'uk';
                     sut.init();
                     expect(sut.getDefaultLocation).toHaveBeenCalled();
                 });
 
                 it("should return false when the page is not front", function() {
-                    mocks.store['common/utils/config'].page.pageId = 'uk';
+                    config.page.pageId = 'uk';
                     expect(sut.isNetworkFront()).toBeTruthy();
 
-                    mocks.store['common/utils/config'].page.pageId = 'us';
+                    config.page.pageId = 'us';
                     expect(sut.isNetworkFront()).toBeTruthy();
 
-                    mocks.store['common/utils/config'].page.pageId = 'au';
+                    config.page.pageId = 'au';
                     expect(sut.isNetworkFront()).toBeTruthy();
 
-                    mocks.store['common/utils/config'].page.pageId = 'social';
+                    config.page.pageId = 'social';
                     expect(sut.isNetworkFront()).toBeFalsy();
                 });
 
@@ -197,7 +199,7 @@ define([
                         }
                     });
 
-                    mocks.store['common/utils/config'].page.weatherapiurl = '/weather/city';
+                    config.page.weatherapiurl = '/weather/city';
 
                     sut.fetchWeatherData(data);
                     expect(sut.getWeatherData).toHaveBeenCalledWith("/weather/city/1.json?_edition=uk");

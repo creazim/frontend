@@ -6,6 +6,8 @@ define([
     Injector
 ) {
 
+    Injector = Injector.default;
+
     var config = {
         page: { },
         switches: { }

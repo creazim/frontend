@@ -9,10 +9,11 @@ define([
     $,
     Injector
     ) {
+    Injector = Injector.default;
 
     return  new Injector()
         .store('common/utils/mediator')
-        .require(['facia/modules/onwards/search-tool', 'mocks'], function (SearchTool, mocks) {
+        .require(['facia/modules/onwards/search-tool', 'common/utils/mediator'], function (SearchTool, mediator) {
         describe('Search tool', function () {
             var container,
                 sut;
@@ -86,15 +87,15 @@ define([
             });
 
             it("should close search tool if not clicked on the list", function() {
-                spyOn(mocks.store['common/utils/mediator'], "emit");
+                spyOn(mediator, "emit");
 
                 sut.handleClick({target: $('body')[0]});
-                expect(mocks.store['common/utils/mediator'].emit).toHaveBeenCalledWith('autocomplete:toggle', false);
+                expect(mediator.emit).toHaveBeenCalledWith('autocomplete:toggle', false);
             });
 
             it("should push data after click on list item", function() {
                 spyOn(sut, "pushData").and.callThrough();
-                spyOn(mocks.store['common/utils/mediator'], "emit");
+                spyOn(mediator, "emit");
 
                 $(".js-search-tool-list").html("<li><a class='js-search-tool-link active'></a><a class='js-search-tool-link' data-weather-id='292177' data-weather-city='Ufa'><span></span></a></li>");
                 sut.init();
@@ -102,7 +103,7 @@ define([
                 bean.fire($(".js-search-tool-list span")[0], "click");
 
                 expect(sut.pushData).toHaveBeenCalled();
-                expect(mocks.store['common/utils/mediator'].emit).toHaveBeenCalledWith('autocomplete:fetch',
+                expect(mediator.emit).toHaveBeenCalledWith('autocomplete:fetch',
                     {
                         'id': '292177',
                         'city': 'Ufa',

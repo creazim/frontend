@@ -18,11 +18,11 @@ define([
     richLinkTagTmpl
 ) {
 
+    Injector = Injector.default;
+
     return new Injector()
         .store(['common/utils/config', 'common/modules/article/spacefinder'])
-        .require(['common/modules/article/rich-links', 'mocks'], function (richLinks, mocks) {
-            var config = mocks.store['common/utils/config'];
-            var spacefinder = mocks.store['common/modules/article/spacefinder'];
+        .require(['common/modules/article/rich-links', 'common/utils/config', 'common/modules/article/spacefinder'], function (richLinks, config, spacefinder) {
             var getRichLinkElements = function () {
                 return $('#article-body .element-rich-link');
             };

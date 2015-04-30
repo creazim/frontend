@@ -12,6 +12,8 @@ define([
     Injector
 ) {
 
+    Injector = Injector.default;
+
     var config = {
         switches: {
             standardAdverts: true

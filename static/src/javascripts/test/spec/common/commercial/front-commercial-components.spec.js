@@ -13,10 +13,11 @@ define([
     fixtures,
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store(['common/utils/config'])
-        .require(['common/modules/commercial/front-commercial-components', 'mocks'], function (frontCommercialComponents, mocks) {
+        .require(['common/modules/commercial/front-commercial-components', 'common/utils/config'], function (frontCommercialComponents, config) {
 
             describe('Front Commercial Components', function () {
 
@@ -30,11 +31,11 @@ define([
                     $fixturesContainer;
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         isFront: true,
                         hasPageSkin: false
                     };
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         commercialComponents: true
                     };
 
@@ -76,7 +77,7 @@ define([
                 });
 
                 it('should place ad between between the 4th and 5th container if a network front', function (done) {
-                    mocks.store['common/utils/config'].page.contentType = 'Network Front';
+                    config.page.contentType = 'Network Front';
 
                     for (var i = 0; i<5; i++) {
                         appendContainer($fixturesContainer);
@@ -96,7 +97,7 @@ define([
                     for (var i = 0; i<2; i++) {
                         appendContainer($fixturesContainer);
                     }
-                    mocks.store['common/utils/config'].page.hasPageSkin = true;
+                    config.page.hasPageSkin = true;
                     frontCommercialComponents.init();
 
                     fastdom.defer(function () {
@@ -107,14 +108,14 @@ define([
                 });
 
                 it('should not display ad slot if commercial-components switch is off', function () {
-                    mocks.store['common/utils/config'].switches.commercialComponents = false;
+                    config.switches.commercialComponents = false;
 
                     expect(frontCommercialComponents.init()).toBe(false);
                     expect(qwery('.ad-slot', $fixturesContainer).length).toBe(0);
                 });
 
                 it('should not display ad slot if not a front', function () {
-                    mocks.store['common/utils/config'].page.isFront = false;
+                    config.page.isFront = false;
 
                     expect(frontCommercialComponents.init()).toBe(false);
                     expect(qwery('.ad-slot', $fixturesContainer).length).toBe(0);

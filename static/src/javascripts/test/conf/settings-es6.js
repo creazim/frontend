@@ -10,20 +10,25 @@ module.exports = function(config) {
         frameworks: ['jspm', 'jasmine', 'phantomjs-shim'],
 
         jspm: {
-            moduleIDs: ['test/spec/common/**/*.spec.js'],
+            moduleIDs: ['test/spec/common/!(commercial)**/*.spec.js'],
             modulePath: 'javascripts',
             config: 'systemjs-config.js'
         },
 
         // list of files / patterns to load in the browser
         files: [
+            // TODO: Get from jspm, not Bower
+            { pattern: 'javascripts/components/sinonjs/sinon.js', included: true },
+            { pattern: 'javascripts/components/jasmine-sinon/jasmine-sinon.js', included: true },
             { pattern: 'javascripts/test/setup.js', included: true },
             { pattern: 'javascripts/projects/**/*.js', included: false},
             { pattern: 'javascripts/es6/**/*.js', included: false},
             { pattern: 'javascripts/vendor/**/*.js', included: false},
             { pattern: 'javascripts/**/views/**/*.html', included: false },
+            { pattern: 'inline-svgs/**/*.svg', included: false },
             { pattern: 'javascripts/test/fixtures/**/*', included: false },
-            { pattern: 'javascripts/test/helpers/**/*.js', included: false }
+            { pattern: 'javascripts/test/helpers/**/*.js', included: false },
+            { pattern: 'systemjs-normalize.js', included: true }
         ],
 
         // list of files to exclude

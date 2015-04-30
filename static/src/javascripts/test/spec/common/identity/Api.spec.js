@@ -3,6 +3,7 @@ define([
 ], function (
     Injector
 ) {
+    Injector = Injector.default;
 
     var reqwestStub = sinon.stub(),
         reqwestReturn = {
@@ -13,14 +14,17 @@ define([
     return new Injector()
         .mock('reqwest', reqwestStub)
         .store(['reqwest', 'common/utils/config', 'common/utils/cookies', 'common/utils/storage'])
-        .require(['common/modules/identity/api', 'mocks'], function (Id, mocks) {
+        .require(['common/modules/identity/api',
+                  'common/utils/config',
+                  'common/utils/cookies',
+                  'common/utils/storage'], function (Id, config, cookies, storage) {
 
             var getCookieStub, getStorageStub;
 
             describe('Get user data', function () {
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         idApiUrl: 'https://idapi.theguardian.com',
                         idUrl:    'https://profile.theguardian.com'
                     };
@@ -29,9 +33,9 @@ define([
                         'WyIyMzEwOTU5IiwiamdvcnJpZUBnbWFpbC5jb20iLCJqYW1lc2dvcnJpZSIsIjUzNCIsMTM4Mjk1MzAzMT' +
                         'U5MSwxXQ.MC0CFBsFwIEITO91EGONK4puyO2ZgGQcAhUAqRa7PVDCoAjrbnJNYYvMFec4fAY'
                     );
-                    mocks.store['common/utils/cookies'].get = getCookieStub;
+                    cookies.get = getCookieStub;
                     getStorageStub = sinon.stub();
-                    mocks.store['common/utils/storage'].local.get = getStorageStub;
+                    storage.local.get = getStorageStub;
                     reqwestStub.reset();
                 });
 
@@ -75,7 +79,7 @@ define([
                 });
 
                 it('should not call api if the cookie does not exist', function () {
-                    mocks.store['common/utils/cookies'].get.withArgs('GU_U').returns(null);
+                    cookies.get.withArgs('GU_U').returns(null);
                     var apiCallback = sinon.spy();
 
                     Id.getUserFromApi(apiCallback);

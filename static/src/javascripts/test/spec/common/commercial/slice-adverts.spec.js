@@ -17,10 +17,11 @@ define([
     Injector,
     sliceAdvertsHtml
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store(['common/utils/config'])
-        .require(['common/modules/commercial/slice-adverts', 'mocks'], function (sliceAdverts, mocks) {
+        .require(['common/modules/commercial/slice-adverts', 'common/utils/config'], function (sliceAdverts, config) {
 
             describe('Slice Adverts', function () {
 
@@ -31,10 +32,10 @@ define([
                     $fixtureContainer;
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         pageId: 'uk/commentisfree'
                     };
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         standardAdverts: true
                     };
 
@@ -122,14 +123,14 @@ define([
                 });
 
                 it('should not not display ad slot if standard-adverts switch is off', function () {
-                    mocks.store['common/utils/config'].switches.standardAdverts = false;
+                    config.switches.standardAdverts = false;
 
                     expect(sliceAdverts.init()).toBe(false);
                     expect(qwery('.ad-slot', $fixtureContainer).length).toBe(0);
                 });
 
                 it('should not add ad to first container if network front', function (done) {
-                    mocks.store['common/utils/config'].page.pageId = 'uk';
+                    config.page.pageId = 'uk';
                     sliceAdverts.init();
 
                     fastdom.defer(function () {

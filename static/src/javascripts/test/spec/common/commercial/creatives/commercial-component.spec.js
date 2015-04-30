@@ -9,10 +9,13 @@ define([
     fixtures,
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store(['common/utils/config', 'common/utils/mediator'])
-        .require(['common/modules/commercial/creatives/commercial-component', 'mocks'], function (CommercialComponent, mocks) {
+        .require(['common/modules/commercial/creatives/commercial-component',
+                  'common/utils/config',
+                  'common/utils/mediator'], function (CommercialComponent, config, mediator) {
 
             xdescribe('Commercial component loader', function () {
 
@@ -25,14 +28,14 @@ define([
                     };
 
                 beforeEach(function() {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         ajaxUrl:    '',
                         isbn:       9780701189426,
                         keywordIds: 'books/annerice,books/fiction,books/books,culture/culture',
                         pageId:     'books/2014/oct/31/prince-lestat-anne-rice-review',
                         section:    'books'
                     };
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         standardAdverts: true
                     };
 
@@ -48,7 +51,7 @@ define([
                 });
 
                 afterEach(function () {
-                    mocks.store['common/utils/mediator'].removeAllListeners();
+                    mediator.removeAllListeners();
                     server.restore();
                     fixtures.clean(fixturesConfig.id);
                 });
@@ -58,7 +61,7 @@ define([
                 });
 
                 it('should load component with keyword params', function (done) {
-                    mocks.store['common/utils/mediator']
+                    mediator
                         .once('modules:commercial:creatives:commercial-component:loaded', done);
 
                     server.respondWith(
@@ -70,9 +73,9 @@ define([
                 });
 
                 it('should use pageId if no keywordIds', function (done) {
-                    mocks.store['common/utils/mediator']
+                    mediator
                         .once('modules:commercial:creatives:commercial-component:loaded', done);
-                    mocks.store['common/utils/config'].page.keywordIds = '';
+                    config.page.keywordIds = '';
 
                     server.respondWith(
                         '/commercial/money/bestbuys.json?k=prince-lestat-anne-rice-review',
@@ -83,7 +86,7 @@ define([
                 });
 
                 it('should load component into the slot', function (done) {
-                    mocks.store['common/utils/mediator']
+                    mediator
                         .once('modules:commercial:creatives:commercial-component:loaded', function () {
                             expect(adSlot.innerHTML).toBe('<p>Commercial Component</p>');
                             done();
@@ -95,7 +98,7 @@ define([
                 });
 
                 it('should load replace oastoken token', function (done) {
-                    mocks.store['common/utils/mediator']
+                    mediator
                         .once('modules:commercial:creatives:commercial-component:loaded', function () {
                             expect(adSlot.innerHTML).toBe('<p>OASToken: 123</p>');
                             done();
@@ -162,7 +165,7 @@ define([
                 ].forEach(function (testConfig) {
 
                     it('should correctly load "' + testConfig.type  + '" component', function (done) {
-                        mocks.store['common/utils/mediator']
+                        mediator
                             .once('modules:commercial:creatives:commercial-component:loaded', done);
 
                         server.respondWith(testConfig.url, [200, {}, '{ "html": "" }']);

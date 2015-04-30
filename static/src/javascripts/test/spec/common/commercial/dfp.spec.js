@@ -15,9 +15,10 @@ define([
     fixtures,
     Injector
 ) {
+    Injector = Injector.default;
     return new Injector()
         .store(['common/utils/config', 'common/utils/mediator'])
-        .require(['common/modules/commercial/dfp', 'mocks'], function (dfp, mocks) {
+        .require(['common/modules/commercial/dfp', 'common/utils/config'], function (dfp, config) {
 
             describe('DFP', function () {
 
@@ -49,11 +50,11 @@ define([
                     };
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         commercialComponents: true,
                         standardAdverts:      true
                     };
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         adUnit:      '/123456/theguardian.com/front',
                         contentType: 'Article',
                         edition:     'us',
@@ -63,7 +64,7 @@ define([
                         section:     'news',
                         seriesId:    'learning/series/happy-times'
                     };
-                    mocks.store['common/utils/config'].images = {
+                    config.images = {
                         commercial: {}
                     };
 

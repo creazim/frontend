@@ -5,6 +5,7 @@ define([
     fixtures,
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .mock({
@@ -19,7 +20,9 @@ define([
             }
         })
         .store(['common/utils/config', 'common/utils/mediator'])
-        .require(['common/modules/onward/popular', 'mocks'], function (Popular, mocks) {
+        .require(['common/modules/onward/popular',
+                  'common/utils/config',
+                  'common/utils/mediator'], function (Popular, config, mediator) {
 
             describe('Most popular', function () {
                 var fixturesConfig = {
@@ -32,7 +35,7 @@ define([
                     server;
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page.section = 'football';
+                    config.page.section = 'football';
 
                     // set up fake server
                     server = sinon.fakeServer.create();
@@ -51,7 +54,7 @@ define([
                     var section = 'football';
 
                     server.respondWith('/most-read/' + section + '.json', [200, {}, '{ "html": "' + html + '" }']);
-                    mocks.store['common/utils/mediator'].once('modules:popular:loaded', function (el) {
+                    mediator.once('modules:popular:loaded', function (el) {
                         var innerHtml = el.innerHTML;
                         expect(innerHtml).toBe('popular');
                         done();
@@ -61,10 +64,10 @@ define([
                 });
 
                 it("should only request global most popular for blacklisted sections", function (done) {
-                    mocks.store['common/utils/config'].page.section = 'info';
+                    config.page.section = 'info';
 
                     server.respondWith('/most-read.json', [200, {}, '{ "html": "' + html + '" }']);
-                    mocks.store['common/utils/mediator'].once('modules:popular:loaded', function (el) {
+                    mediator.once('modules:popular:loaded', function (el) {
                         var innerHtml = el.innerHTML;
                         expect(innerHtml).toBe('popular');
                         done();

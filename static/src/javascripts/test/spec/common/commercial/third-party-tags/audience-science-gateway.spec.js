@@ -3,20 +3,23 @@ define([
 ], function (
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store(['common/utils/config', 'common/utils/storage'])
-        .require(['common/modules/commercial/third-party-tags/audience-science-gateway', 'mocks'], function (audienceScienceGateway, mocks) {
+        .require(['common/modules/commercial/third-party-tags/audience-science-gateway',
+                  'common/utils/config',
+                  'common/utils/storage'], function (audienceScienceGateway, config, storage) {
 
             var getParaWithSpaceStub, $fixturesContainer;
 
             describe('Audience Science Gateway', function () {
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         section: 'news'
                     };
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         audienceScienceGateway: true
                     };
                 });
@@ -49,7 +52,7 @@ define([
                             }
                         };
                     stored['news'] = storedValue;
-                    mocks.store['common/utils/storage'].local.set('gu.ads.audsci-gateway', stored);
+                    storage.local.set('gu.ads.audsci-gateway', stored);
                     expect(audienceScienceGateway.getSegments()).toEqual({
                         pq_Y1C40a: 'T',
                         pq_c7Zrhu: 'T'
@@ -58,12 +61,12 @@ define([
 
                 it('should return empty object if no segments', function () {
                     audienceScienceGateway.init();
-                    mocks.store['common/utils/storage'].local.set('gu.ads.audsci-gateway', {});
+                    storage.local.set('gu.ads.audsci-gateway', {});
                     expect(audienceScienceGateway.getSegments()).toEqual({});
                 });
 
                 it('should return empty object if switch is off', function () {
-                    mocks.store['common/utils/config'].page.section = undefined;
+                    config.page.section = undefined;
                     audienceScienceGateway.init();
                     expect(audienceScienceGateway.getSegments()).toEqual({});
                 });

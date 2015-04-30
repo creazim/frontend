@@ -5,15 +5,19 @@ define([
     $,
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store('common/utils/config')
-        .require(['common/modules/commercial/third-party-tags/krux', 'mocks'], function (krux, mocks) {
+        .require(['common/modules/commercial/third-party-tags/krux',
+                  'common/utils/config'], function (krux, config) {
 
             describe('Krux', function () {
 
+                var requireStub;
+                window.require = System.amdRequire;
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         krux: true
                     };
                     requireStub = sinon.stub(window, 'require');
@@ -25,7 +29,7 @@ define([
 
 
                 it('should not load if switch is off', function () {
-                    mocks.store['common/utils/config'].switches.krux = false;
+                    config.switches.krux = false;
 
                     expect(krux.load()).toBeFalsy();
                 });

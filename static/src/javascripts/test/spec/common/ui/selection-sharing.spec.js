@@ -9,6 +9,7 @@ define([
     fixtures,
     Injector
 ) {
+    Injector = Injector.default;
 
     var conf =  {
         id: 'selection-sharing-test',

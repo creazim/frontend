@@ -5,10 +5,13 @@ define([
     ABTest,
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store(['common/utils/config', 'common/modules/analytics/mvt-cookie'])
-        .require(['common/modules/experiments/ab', 'mocks'], function (ab, mocks) {
+        .require(['common/modules/experiments/ab',
+                  'common/utils/config',
+                  'common/modules/analytics/mvt-cookie'], function (ab, config, mvtCookie) {
 
             describe('AB Testing', function () {
                 var test,
@@ -20,12 +23,12 @@ define([
                     };
 
                 beforeEach(function() {
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         abDummyTest:  true,
                         abDummyTest2: true
                     };
 
-                    mocks.store['common/utils/config'].tests = [];
+                    config.tests = [];
 
                     // a list of ab-tests that can be used in the spec's
                     test = {
@@ -54,7 +57,7 @@ define([
                 describe('User segmentation', function () {
 
                     it('should not run if switch is off', function () {
-                        mocks.store['common/utils/config'].switches.abDummyTest = false;
+                        config.switches.abDummyTest = false;
 
                         ab.addTest(test.one);
                         ab.segment();
@@ -97,7 +100,7 @@ define([
                     });
 
                     it("should not segment user if the test is switched off", function () {
-                        mocks.store['common/utils/config'].switches.abDummyTest = false;
+                        config.switches.abDummyTest = false;
 
                         ab.addTest(test.one);
                         ab.segment();
@@ -106,7 +109,7 @@ define([
                     });
 
                     it("should not segment user if they already belong to the test", function () {
-                        mocks.store['common/modules/analytics/mvt-cookie'].overwriteMvtCookie(1);
+                        mvtCookie.overwriteMvtCookie(1);
 
                         ab.addTest(test.one);
                         ab.segment();
@@ -208,7 +211,7 @@ define([
                     });
 
                     it('should return the variant of a test that current user is participating in', function () {
-                        mocks.store['common/modules/analytics/mvt-cookie'].overwriteMvtCookie(2);
+                        mvtCookie.overwriteMvtCookie(2);
 
                         ab.addTest(test.one);
                         ab.addTest(test.two);
@@ -220,7 +223,7 @@ define([
                     });
 
                     it('should generate a string for Omniture to tag the test(s) the user is in', function () {
-                        mocks.store['common/modules/analytics/mvt-cookie'].overwriteMvtCookie(2);
+                        mvtCookie.overwriteMvtCookie(2);
 
                         test.two.audience = 1;
                         ab.addTest(test.one);
@@ -233,7 +236,7 @@ define([
                     });
 
                     it('should generate Omniture tags when there is two tests, but one cannot run', function () {
-                        mocks.store['common/modules/analytics/mvt-cookie'].overwriteMvtCookie(2);
+                        mvtCookie.overwriteMvtCookie(2);
                         test.one.canRun = function() { return false; };
                         ab.addTest(test.one);
                         test.two.audience = 1;
@@ -245,7 +248,7 @@ define([
                     });
 
                     it('should not generate Omniture tags when a test can not be run', function () {
-                        mocks.store['common/modules/analytics/mvt-cookie'].overwriteMvtCookie(2);
+                        mvtCookie.overwriteMvtCookie(2);
 
                         ab.addTest(test.one);
                         test.two.canRun = function() { return false; };

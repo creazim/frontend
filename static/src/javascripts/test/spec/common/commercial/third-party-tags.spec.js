@@ -3,10 +3,11 @@ define([
 ], function (
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store('common/utils/config')
-        .require(['common/modules/commercial/third-party-tags', 'mocks'], function (tagsContainer, mocks) {
+        .require(['common/modules/commercial/third-party-tags', 'common/utils/config'], function (tagsContainer, config) {
 
             function extractParam(img, paramName) {
                 var paramValue = new RegExp(paramName + '=([^&]*)').exec(img.src);
@@ -16,7 +17,7 @@ define([
             describe('Tags Container', function () {
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         contentType: 'Article',
                         section: 'article',
                         edition: 'uk'
@@ -28,13 +29,13 @@ define([
                 });
 
                 it('should not run if "Identity" content type', function () {
-                    mocks.store['common/utils/config'].page.contentType = 'Identity';
+                    config.page.contentType = 'Identity';
 
                     expect(tagsContainer.init()).toBe(false);
                 });
 
                 it('should not run if "identity" section', function () {
-                    mocks.store['common/utils/config'].page.section = 'identity';
+                    config.page.section = 'identity';
 
                     expect(tagsContainer.init()).toBe(false);
                 });

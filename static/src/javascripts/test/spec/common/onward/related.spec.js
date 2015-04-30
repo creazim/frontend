@@ -9,6 +9,7 @@ define([
     fixtures,
     Injector
 ) {
+    Injector = Injector.default;
 
     var expandableSpy = sinon.spy(function () {
         return {
@@ -19,7 +20,8 @@ define([
     return new Injector()
         .mock('common/modules/ui/expandable', expandableSpy)
         .store('common/utils/config')
-        .require(['common/modules/onward/related', 'mocks'], function (Related, mocks) {
+        .require(['common/modules/onward/related',
+                  'common/utils/config'], function (Related, config) {
 
             var fixturesConfig = {
                     id: 'related',
@@ -33,11 +35,11 @@ define([
             describe('Related', function () {
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         hasStoryPackage: false,
                         showRelatedContent: true
                     };
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         relatedContent: true,
                         ajaxRelatedContent: true
                     };
@@ -53,7 +55,7 @@ define([
                 });
 
                 it('should hide if there\'s no story package and related can\'t be fetched', function () {
-                    mocks.store['common/utils/config'].switches.relatedContent = false;
+                    config.switches.relatedContent = false;
 
                     var related = new Related();
                     related.renderRelatedComponent();
@@ -61,7 +63,7 @@ define([
                 });
 
                 it('should create expandable if page has story package', function () {
-                    mocks.store['common/utils/config'].page.hasStoryPackage = true;
+                    config.page.hasStoryPackage = true;
 
                     var related = new Related();
                     related.renderRelatedComponent();

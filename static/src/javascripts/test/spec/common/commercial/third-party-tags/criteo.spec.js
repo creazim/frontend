@@ -7,10 +7,12 @@ define([
     $,
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store('common/utils/config')
-        .require(['common/modules/commercial/third-party-tags/criteo', 'mocks'], function (criteo, mocks) {
+        .require(['common/modules/commercial/third-party-tags/criteo',
+                  'common/utils/config'], function (criteo, config) {
 
             function retrieveParams(url) {
                 return _.zipObject(url.split('?').pop().split('!').shift().split('&').map(function(param) {
@@ -20,8 +22,10 @@ define([
 
             describe('Criteo', function () {
 
+                var requireStub;
+                window.require = System.amdRequire;
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         criteo: true
                     };
                     requireStub = sinon.stub(window, 'require');
@@ -33,7 +37,7 @@ define([
                 });
 
                 it('should not load if switch is off', function () {
-                    mocks.store['common/utils/config'].switches.criteo = false;
+                    config.switches.criteo = false;
 
                     expect(criteo.load()).toBeFalsy();
                 });

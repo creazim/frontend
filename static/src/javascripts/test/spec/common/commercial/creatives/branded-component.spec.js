@@ -9,6 +9,7 @@ define([
     fixtures,
     Injector
 ) {
+    Injector = Injector.default;
 
     var config = {
             images: {

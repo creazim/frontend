@@ -13,9 +13,10 @@ define([
     fixtures,
     Injector
 ) {
+    Injector = Injector.default;
     return new Injector()
         .store(['common/utils/config'])
-        .require(['common/modules/commercial/badges', 'mocks'], function (badges, mocks) {
+        .require(['common/modules/commercial/badges', 'common/utils/config'], function (badges, config) {
 
             describe('Badges', function () {
 
@@ -60,13 +61,13 @@ define([
                     $fixtureContainer;
 
                 beforeEach(function () {
-                    mocks.store['common/utils/config'].images = {
+                    config.images = {
                         commercial: {}
                     };
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         section: 'news'
                     };
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         sponsored: true
                     };
 
@@ -83,7 +84,7 @@ define([
                 });
 
                 it('should not display ad slot if sponsored switch is off', function () {
-                    mocks.store['common/utils/config'].switches.sponsored = false;
+                    config.switches.sponsored = false;
                     expect(badges.init()).toBe(false);
                     expect(qwery('.ad-slot', $fixtureContainer).length).toBe(0);
                 });

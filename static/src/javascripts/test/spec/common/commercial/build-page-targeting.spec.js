@@ -3,6 +3,7 @@ define([
 ], function (
     Injector
 ) {
+    Injector = Injector.default;
 
     return new Injector()
         .store([
@@ -13,15 +14,25 @@ define([
             'common/modules/experiments/ab',
             'common/modules/commercial/third-party-tags/krux',
             'common/modules/commercial/third-party-tags/audience-science-gateway',
-            'common/modules/commercial/third-party-tags/criteo'
+            'common/modules/commercial/third-party-tags/criteo',
         ])
-        .require(['common/modules/commercial/build-page-targeting', 'mocks'], function (buildPageTargeting, mocks) {
+        .require(['common/modules/commercial/build-page-targeting',
+                  'common/utils/config',
+                  'common/utils/cookies',
+                  'common/utils/detect',
+                  'common/modules/commercial/user-ad-targeting',
+                  'common/modules/experiments/ab',
+                  'common/modules/commercial/third-party-tags/krux',
+                  'common/modules/commercial/third-party-tags/audience-science-gateway',
+                  'common/modules/commercial/third-party-tags/criteo'],
+                  function (buildPageTargeting, config, cookies, detect, userAdTargeting, ab,
+                            krux, audienceScienceGateway, criteo) {
 
             describe('Build Page Targeting', function () {
 
                 beforeEach(function () {
 
-                    mocks.store['common/utils/config'].page = {
+                    config.page = {
                         edition:     'US',
                         contentType: 'Video',
                         isSurging:   true,
@@ -35,35 +46,35 @@ define([
                         blogIds: 'a/blog',
                         videoDuration: 63
                     };
-                    mocks.store['common/utils/config'].switches = {
+                    config.switches = {
                         audienceScienceGateway: true
                     };
-                    mocks.store['common/utils/cookies'].get = function () {
+                    cookies.get = function () {
                         return 'ng101';
                     };
-                    mocks.store['common/utils/detect'].getBreakpoint = function () {
+                    detect.getBreakpoint = function () {
                         return 'mobile';
                     };
-                    mocks.store['common/modules/commercial/user-ad-targeting'].getUserSegments = function () {
+                    userAdTargeting.getUserSegments = function () {
                         return ['seg1', 'seg2'];
                     };
-                    mocks.store['common/modules/experiments/ab'].getParticipations = function () {
+                    ab.getParticipations = function () {
                         return {
                             MtMaster: {
                                 variant: 'variant'
                             }
                         };
                     };
-                    mocks.store['common/modules/commercial/third-party-tags/krux'].getSegments = function () {
+                    krux.getSegments = function () {
                         return ['E012712', 'E012390', 'E012478'];
                     };
-                    mocks.store['common/modules/commercial/third-party-tags/audience-science-gateway'].getSegments = function () {
+                    audienceScienceGateway.getSegments = function () {
                         return {
                             asg1: 'value-one',
                             asg2: 'value-two'
                         };
                     };
-                    mocks.store['common/modules/commercial/third-party-tags/criteo'].getSegments = function () {
+                    criteo.getSegments = function () {
                         return {
                             c1: 'value-one',
                             c2: 'value-two'
@@ -101,7 +112,7 @@ define([
                 });
 
                 it('should use pageId if no seriesId', function () {
-                    mocks.store['common/utils/config'].page.seriesId = null;
+                    config.page.seriesId = null;
 
                     expect(buildPageTargeting().se).toBe('footballweekly');
                 });
@@ -111,7 +122,7 @@ define([
                 });
 
                 it('should use pageId if no keywordIds', function () {
-                    mocks.store['common/utils/config'].page.keywordIds = null;
+                    config.page.keywordIds = null;
 
                     expect(buildPageTargeting().k).toEqual('footballweekly');
                 });
@@ -139,17 +150,17 @@ define([
                 });
 
                 it('should remove empty values', function () {
-                    mocks.store['common/utils/config'].page = {};
-                    mocks.store['common/modules/commercial/user-ad-targeting'].getUserSegments = function () {
+                    config.page = {};
+                    userAdTargeting.getUserSegments = function () {
                         return [];
                     };
-                    mocks.store['common/modules/commercial/third-party-tags/krux'].getSegments = function () {
+                    krux.getSegments = function () {
                         return [];
                     };
-                    mocks.store['common/modules/commercial/third-party-tags/audience-science-gateway'].getSegments = function () {
+                    audienceScienceGateway.getSegments = function () {
                         return {};
                     };
-                    mocks.store['common/modules/commercial/third-party-tags/criteo'].getSegments = function () {
+                    criteo.getSegments = function () {
                         return {};
                     };
 

@@ -3,6 +3,7 @@ define([
 ], function (
     Injector
 ) {
+    Injector = Injector.default;
 
     var reqwestSpy = sinon.spy(function () {
         return {
