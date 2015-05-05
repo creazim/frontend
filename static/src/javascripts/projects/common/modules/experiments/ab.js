@@ -19,7 +19,6 @@ define([
     'common/modules/experiments/headlines',
     'common/modules/experiments/tests/mt-lz-ads-depth',
     'common/modules/experiments/tests/mt-sticky-nav-all',
-    'common/modules/experiments/tests/facia-slideshow',
     'common/modules/experiments/tests/mt-sticky-burger',
     'common/modules/experiments/tests/mt-sticky-all-ux',
     'common/modules/experiments/tests/mt-sticky-burger-ux'
@@ -44,7 +43,6 @@ define([
     Headline,
     MtLzAdsDepth,
     MtStickyNavAll,
-    FaciaSlideshow,
     MtStickyBurger,
     MtStickyAllUx,
     MtStickyBurgerUx
@@ -69,8 +67,7 @@ define([
             new MtStickyBurgerUx(),
             _.map(_.range(1, 10), function (n) {
                 return new Headline(n);
-            }),
-            new FaciaSlideshow()
+            })
         ]),
         participationsKey = 'gu.ab.participations';
 
